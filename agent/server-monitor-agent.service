@@ -1,0 +1,17 @@
+[Unit]
+Description=Server Monitor Agent
+After=network.target docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=root
+EnvironmentFile=/etc/server-monitor-agent.env
+ExecStart=/usr/bin/python3 /opt/server-monitor-agent/server_agent.py
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

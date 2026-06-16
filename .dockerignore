@@ -1,0 +1,11 @@
+src/vendor/
+src/node_modules/
+src/public/build/
+src/public/hot
+src/storage/logs/
+src/storage/framework/cache/
+src/storage/framework/sessions/
+src/storage/framework/views/
+src/storage/framework/testing/
+src/bootstrap/cache/
+src/.env
