@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-950 text-gray-100 p-6">
+<div class="min-h-screen bg-gray-950 text-gray-100 p-6" wire:poll.60000ms>
 
     {{-- ===== TOP BAR ===== --}}
     <div class="flex items-center justify-between mb-6">

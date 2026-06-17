@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Models\Server;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Livewire\Attributes\Poll;
 use Livewire\Component;
 
 class ServerDashboard extends Component
@@ -26,7 +25,6 @@ class ServerDashboard extends Component
         }
     }
 
-    #[Poll(30000)]
     public function render()
     {
         $servers = Server::where('is_active', true)
