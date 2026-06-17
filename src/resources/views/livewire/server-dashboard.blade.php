@@ -56,7 +56,7 @@
     </div>
 
     {{-- ===== SERVER LIST ===== --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div class="space-y-4">
         @forelse ($servers as $server)
             @php
                 $snap     = $server->latestSnapshot;
@@ -86,92 +86,77 @@
 
             @endphp
 
-            <div class="bg-gray-900 border {{ $cardBorder }} rounded-xl p-5">
+            <div class="bg-gray-900 border {{ $cardBorder }} rounded-xl px-4 py-3">
 
                 {{-- Server header row --}}
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-3">
-                        <span class="w-3 h-3 rounded-full {{ $statusDot }} {{ $online ? 'animate-pulse' : '' }}"></span>
-                        <div>
-                            <span class="font-semibold text-white text-base">{{ $server->name }}</span>
-                            <span class="text-gray-500 text-sm ml-2">{{ $server->host }}:{{ $server->port }}</span>
-                        </div>
-                        @if (! $online && $snap)
-                            <span class="text-xs bg-red-900/50 text-red-300 border border-red-800/50 rounded px-2 py-0.5">offline</span>
-                        @elseif ($warning)
-                            <span class="text-xs bg-amber-900/50 text-amber-300 border border-amber-800/50 rounded px-2 py-0.5">warning</span>
-                        @endif
-                        @if (! $snap)
-                            <span class="text-xs bg-gray-800 text-gray-400 border border-gray-700 rounded px-2 py-0.5">never polled</span>
-                        @endif
-                    </div>
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-2.5 h-2.5 rounded-full {{ $statusDot }} {{ $online ? 'animate-pulse' : '' }}"></span>
+                    <span class="font-semibold text-white">{{ $server->name }}</span>
+                    <span class="text-gray-500 text-sm">{{ $server->host }}:{{ $server->port }}</span>
+                    @if (! $online && $snap)
+                        <span class="text-xs bg-red-900/50 text-red-300 border border-red-800/50 rounded px-2 py-0.5">offline</span>
+                    @elseif ($warning)
+                        <span class="text-xs bg-amber-900/50 text-amber-300 border border-amber-800/50 rounded px-2 py-0.5">warning</span>
+                    @endif
+                    @if (! $snap)
+                        <span class="text-xs bg-gray-800 text-gray-400 border border-gray-700 rounded px-2 py-0.5">never polled</span>
+                    @endif
                 </div>
 
                 @if ($online && $snap)
-                    {{-- Metrics bar --}}
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                    {{-- Metrics + Disks in one row --}}
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 mb-2">
 
                         {{-- CPU --}}
                         @php $c = $colorClass($cpuColor); @endphp
-                        <div class="bg-gray-800/60 rounded-lg p-3">
-                            <p class="text-xs text-gray-500 mb-1">CPU</p>
-                            <p class="text-lg font-semibold {{ $c['text'] }}">{{ $snap->cpu_percent !== null ? round($snap->cpu_percent, 1) . '%' : '—' }}</p>
-                            <div class="mt-1.5 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full {{ $c['bar'] }} rounded-full transition-all duration-500"
-                                     style="width: {{ min($snap->cpu_percent ?? 0, 100) }}%"></div>
+                        <div class="bg-gray-800/60 rounded-lg px-3 py-2">
+                            <p class="text-xs text-gray-500">CPU</p>
+                            <p class="text-base font-semibold {{ $c['text'] }}">{{ $snap->cpu_percent !== null ? round($snap->cpu_percent, 1) . '%' : '—' }}</p>
+                            <div class="mt-1 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full {{ $c['bar'] }} rounded-full" style="width: {{ min($snap->cpu_percent ?? 0, 100) }}%"></div>
                             </div>
                         </div>
 
                         {{-- Memory --}}
                         @php $c = $colorClass($memColor); @endphp
-                        <div class="bg-gray-800/60 rounded-lg p-3">
-                            <p class="text-xs text-gray-500 mb-1">Memory</p>
-                            <p class="text-lg font-semibold {{ $c['text'] }}">{{ $snap->memory_percent !== null ? round($snap->memory_percent, 1) . '%' : '—' }}</p>
-                            @if ($snap->memory_used_mb && $snap->memory_total_mb)
-                                <p class="text-xs text-gray-500">{{ round($snap->memory_used_mb / 1024, 1) }} / {{ round($snap->memory_total_mb / 1024, 1) }} GB</p>
-                            @endif
-                            <div class="mt-1.5 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full {{ $c['bar'] }} rounded-full transition-all duration-500"
-                                     style="width: {{ min($snap->memory_percent ?? 0, 100) }}%"></div>
+                        <div class="bg-gray-800/60 rounded-lg px-3 py-2">
+                            <p class="text-xs text-gray-500">Memory</p>
+                            <p class="text-base font-semibold {{ $c['text'] }}">{{ $snap->memory_percent !== null ? round($snap->memory_percent, 1) . '%' : '—' }}</p>
+                            <div class="mt-1 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full {{ $c['bar'] }} rounded-full" style="width: {{ min($snap->memory_percent ?? 0, 100) }}%"></div>
                             </div>
                         </div>
 
                         {{-- Load Average --}}
-                        <div class="bg-gray-800/60 rounded-lg p-3">
-                            <p class="text-xs text-gray-500 mb-1">Load Avg</p>
+                        <div class="bg-gray-800/60 rounded-lg px-3 py-2">
+                            <p class="text-xs text-gray-500">Load</p>
                             @if ($snap->load_avg && count($snap->load_avg) === 3)
-                                <p class="text-lg font-semibold text-gray-200">{{ $snap->load_avg[0] }}</p>
-                                <p class="text-xs text-gray-500">{{ $snap->load_avg[1] }} · {{ $snap->load_avg[2] }}</p>
+                                <p class="text-base font-semibold text-gray-200">{{ $snap->load_avg[0] }}</p>
+                                <p class="text-xs text-gray-600">{{ $snap->load_avg[1] }} · {{ $snap->load_avg[2] }}</p>
                             @else
-                                <p class="text-lg font-semibold text-gray-500">—</p>
+                                <p class="text-base font-semibold text-gray-500">—</p>
                             @endif
                         </div>
 
                         {{-- Uptime --}}
-                        <div class="bg-gray-800/60 rounded-lg p-3">
-                            <p class="text-xs text-gray-500 mb-1">Uptime</p>
-                            <p class="text-lg font-semibold text-gray-200">{{ $this->formatUptime($snap->uptime_seconds) }}</p>
+                        <div class="bg-gray-800/60 rounded-lg px-3 py-2">
+                            <p class="text-xs text-gray-500">Uptime</p>
+                            <p class="text-base font-semibold text-gray-200">{{ $this->formatUptime($snap->uptime_seconds) }}</p>
                         </div>
+
+                        {{-- Disks inline --}}
+                        @foreach ($snap->disks ?? [] as $disk)
+                            @php $c = $colorClass($this->metricColor($disk['percent'] ?? null)); @endphp
+                            <div class="bg-gray-800/60 rounded-lg px-3 py-2">
+                                <p class="text-xs text-gray-500 truncate" title="{{ $disk['mountpoint'] }}">{{ $disk['mountpoint'] }}</p>
+                                <p class="text-base font-semibold {{ $c['text'] }}">{{ $disk['percent'] ?? '—' }}%</p>
+                                <div class="mt-1 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                    <div class="h-full {{ $c['bar'] }} rounded-full" style="width: {{ min($disk['percent'] ?? 0, 100) }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
 
                     </div>
-
-                    {{-- Disks --}}
-                    @if (! empty($snap->disks))
-                        <div class="flex flex-col gap-2 mb-4">
-                            @foreach ($snap->disks as $disk)
-                                @php $c = $colorClass($this->metricColor($disk['percent'] ?? null)); @endphp
-                                <div class="bg-gray-800/60 rounded-lg p-3">
-                                    <p class="text-xs text-gray-500 mb-1 truncate" title="{{ $disk['mountpoint'] }}">{{ $disk['mountpoint'] }}</p>
-                                    <p class="text-lg font-semibold {{ $c['text'] }}">{{ $disk['percent'] ?? '—' }}%</p>
-                                    <p class="text-xs text-gray-500">{{ $disk['used_gb'] }} / {{ $disk['total_gb'] }} GB</p>
-                                    <div class="mt-1.5 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                                        <div class="h-full {{ $c['bar'] }} rounded-full transition-all duration-500"
-                                             style="width: {{ min($disk['percent'] ?? 0, 100) }}%"></div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
 
                     {{-- Docker containers --}}
                     <div class="border-t border-gray-800 pt-3">
