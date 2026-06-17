@@ -82,13 +82,20 @@ def get_containers():
             cpu_pct, mem_mb = get_container_stats(c) if c.status == "running" else (0.0, 0.0)
 
             ports_raw = c.ports or {}
+            seen_ports = set()
             ports = []
             for container_port, bindings in ports_raw.items():
                 if bindings:
                     for b in bindings:
-                        ports.append(f"{b['HostPort']}:{container_port.split('/')[0]}")
+                        entry = f"{b['HostPort']}:{container_port.split('/')[0]}"
+                        if entry not in seen_ports:
+                            seen_ports.add(entry)
+                            ports.append(entry)
                 else:
-                    ports.append(container_port)
+                    entry = container_port.split('/')[0]
+                    if entry not in seen_ports:
+                        seen_ports.add(entry)
+                        ports.append(entry)
 
             result.append({
                 "id": c.short_id,

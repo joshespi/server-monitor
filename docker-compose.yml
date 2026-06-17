@@ -3,6 +3,7 @@ services:
     build: .
     volumes:
       - ./src:/var/www/html
+      - ./servers.json:/config/servers.json:ro
     depends_on:
       db:
         condition: service_healthy

@@ -1,0 +1,8 @@
+[
+    { "name": "Web-PreDeploy", "host": "158.91.1.130", "port": 8888 },
+    { "name": "dock-host1",    "host": "158.91.1.128", "port": 8888 },
+    { "name": "dock-host2",    "host": "158.91.1.129", "port": 8888 },
+    { "name": "dock-host4",    "host": "158.91.1.131", "port": 8888 },
+    { "name": "dock-host5",    "host": "158.91.1.132", "port": 8888 },
+    { "name": "Docker-DevOps", "host": "158.91.1.243", "port": 8888 }
+]
