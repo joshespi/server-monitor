@@ -94,13 +94,14 @@ class ServerDashboard extends Component
         $days    = intdiv($seconds, 86400);
         $hours   = intdiv($seconds % 86400, 3600);
         $minutes = intdiv($seconds % 3600, 60);
+        $secs    = $seconds % 60;
 
         if ($days > 0) {
-            return "{$days}d {$hours}h";
+            return "{$days}d {$hours}h {$minutes}m {$secs}s";
         }
         if ($hours > 0) {
-            return "{$hours}h {$minutes}m";
+            return "{$hours}h {$minutes}m {$secs}s";
         }
-        return "{$minutes}m";
+        return "{$minutes}m {$secs}s";
     }
 }
