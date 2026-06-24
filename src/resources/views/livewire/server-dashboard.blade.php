@@ -93,6 +93,9 @@
                     <span class="w-2.5 h-2.5 rounded-full {{ $statusDot }} {{ $online ? 'animate-pulse' : '' }}"></span>
                     <span class="font-semibold text-white">{{ $server->name }}</span>
                     <span class="text-gray-500 text-sm">{{ $server->host }}:{{ $server->port }}</span>
+                    @if ($snap)
+                        <span class="text-gray-600 text-xs" title="{{ $snap->created_at->format('Y-m-d H:i:s') }}">last seen {{ $snap->created_at->diffForHumans() }}</span>
+                    @endif
                     @if (! $online && $snap)
                         <span class="text-xs bg-red-900/50 text-red-300 border border-red-800/50 rounded px-2 py-0.5">offline</span>
                     @elseif ($warning)
